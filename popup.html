@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 240px;
+      padding: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #1a1a1a;
+      color: #ffffff;
+    }
+    h3 {
+      margin-top: 0;
+      font-size: 14px;
+      color: #ffd700;
+    }
+    button {
+      width: 100%;
+      padding: 8px 12px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 4px;
+      background-color: #ffd700;
+      color: #000000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e6c200;
+    }
+    #status {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #cccccc;
+    }
+  </style>
+</head>
+<body>
+  <h3>Bot Control Panel</h3>
+  <button id="btnRun">Trigger Page Action</button>
+  <div id="status">Status: Standby</div>
+
+  <script>
+    document.getElementById('btnRun').addEventListener('click', async () => {
+      const statusDiv = document.getElementById('status');
+      statusDiv.textContent = "Status: Executing...";
+
+      // Find active tab and dispatch message to content script
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab) {
+        chrome.tabs.sendMessage(tab.id, { action: "RUN_PAGE_DOM_SCRAPE" }, (response) => {
+          if (response && response.status === "COMPLETE") {
+            statusDiv.textContent = `Scraped: ${response.title}`;
+          } else {
+            statusDiv.textContent = "Status: Failed or unsupported page.";
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
