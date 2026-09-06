@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Bot Automation Suite",
+  "name": "Alfa Bot API - Binary Compass",
   "version": "1.0.0",
-  "description": "Background automation worker and DOM scraper.",
+  "description": "Signal listener and automated UI compass panel.",
   "permissions": [
     "storage",
     "activeTab",
@@ -10,21 +10,15 @@
     "alarms"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "http://localhost/*",
+    "http://127.0.0.1/*",
+    "https://*/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
-    }
-  ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Bot Control Console"
+    "default_title": "Alfa Bot Console"
   }
 }
-
