@@ -1,20 +1,25 @@
-// Keep-alive heartbeat alarm for Manifest V3 background workers
-chrome.alarms.create("botHeartbeat", { periodInMinutes: 1 });
+// Keep-alive heartbeat for Kiwi Browser MV3 environment
+chrome.alarms.create("alfaHeartbeat", { periodInMinutes: 1 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "botHeartbeat") {
-    console.log("[Background Worker] Heartbeat tick - worker active.");
+  if (alarm.name === "alfaHeartbeat") {
+    console.log("[Alfa Background] Worker pulse ok.");
   }
 });
 
-// Event listener for messages sent from content script or popup UI
+// Listener for signals and UI action events
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("[Background] Received action:", request);
+  console.log("[Alfa Background] Received message:", request);
 
-  if (request.action === "EXECUTE_BOT") {
-    // Process background jobs or API queries here
-    sendResponse({ status: "SUCCESS", message: "Bot task executed." });
+  if (request.action === "RESET_COMPASS") {
+    // Logic to reset state
+    sendResponse({ status: "RESET_DONE" });
   }
 
-  return true; // Keep response channel open for async execution
+  if (request.action === "COMMIT_PHASE") {
+    // Logic to advance compounding step
+    sendResponse({ status: "PHASE_COMMITTED" });
+  }
+
+  return true;
 });
