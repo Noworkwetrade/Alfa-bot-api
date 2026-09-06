@@ -1,63 +1,182 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary Compass</title>
   <style>
+    :root {
+      --bg-dark: #0a0e0a;
+      --panel-bg: #0d150e;
+      --card-bg: #121e14;
+      --accent-green: #00ff66;
+      --accent-dim: #00b347;
+      --text-main: #e0f2e5;
+      --text-muted: #6b8e72;
+      --border-color: #1b3320;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: monospace, sans-serif; }
+
     body {
-      width: 240px;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
       padding: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: #1a1a1a;
-      color: #ffffff;
+      width: 360px;
     }
-    h3 {
-      margin-top: 0;
-      font-size: 14px;
-      color: #ffd700;
+
+    .compass-container {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
     }
-    button {
-      width: 100%;
-      padding: 8px 12px;
-      margin-top: 8px;
-      border: none;
-      border-radius: 4px;
-      background-color: #ffd700;
-      color: #000000;
+
+    .header-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-weight: bold;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .status-badge {
+      background: rgba(0, 255, 102, 0.15);
+      border: 1px solid var(--accent-dim);
+      color: var(--accent-green);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+
+    .signal-banner {
+      background: rgba(0, 255, 102, 0.05);
+      border: 1px dashed var(--accent-dim);
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+      font-size: 10px;
+      color: var(--accent-green);
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .trade-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+
+    .trade-table th {
+      color: var(--text-muted);
+      font-size: 9px;
+      padding: 6px 2px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .trade-table td {
+      padding: 8px 2px;
+      font-size: 11px;
+      font-weight: bold;
+      border-bottom: 1px solid rgba(27, 51, 32, 0.5);
+    }
+
+    .btn-group { display: flex; gap: 3px; }
+
+    .btn-action {
+      background: #18281b;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 9px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #e6c200;
+
+    .btn-action.active {
+      background: var(--accent-green);
+      color: #000;
+      border-color: var(--accent-green);
+      font-weight: bold;
     }
-    #status {
-      margin-top: 10px;
+
+    .btn-control {
+      width: 100%;
+      background: #142417;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 6px;
+    }
+
+    .btn-commit {
+      background: var(--accent-green);
+      color: #000;
+      border: none;
       font-size: 11px;
-      color: #cccccc;
     }
   </style>
 </head>
 <body>
-  <h3>Bot Control Panel</h3>
-  <button id="btnRun">Trigger Page Action</button>
-  <div id="status">Status: Standby</div>
 
-  <script>
-    document.getElementById('btnRun').addEventListener('click', async () => {
-      const statusDiv = document.getElementById('status');
-      statusDiv.textContent = "Status: Executing...";
+<div class="compass-container">
+  <div class="header-box">
+    <div class="brand-title">BINARY COMPASS</div>
+    <div class="status-badge">ACTIVE</div>
+  </div>
 
-      // Find active tab and dispatch message to content script
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (tab) {
-        chrome.tabs.sendMessage(tab.id, { action: "RUN_PAGE_DOM_SCRAPE" }, (response) => {
-          if (response && response.status === "COMPLETE") {
-            statusDiv.textContent = `Scraped: ${response.title}`;
-          } else {
-            statusDiv.textContent = "Status: Failed or unsupported page.";
-          }
-        });
-      }
-    });
-  </script>
+  <div class="signal-banner" id="signalStatus">
+    ● WAITING FOR SIGNAL...
+  </div>
+
+  <table class="trade-table">
+    <thead>
+      <tr>
+        <th>Trade #</th>
+        <th>Amount</th>
+        <th>Total Risk</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:var(--accent-green)">#1</td>
+        <td>$2.46</td>
+        <td>$2.46</td>
+        <td>
+          <div class="btn-group">
+            <button class="btn-action active">W</button>
+            <button class="btn-action">L</button>
+            <button class="btn-action">-</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="btn-control" id="btnReset">↺ RESET TABLE</button>
+  <button class="btn-control btn-commit" id="btnCommit">🏆 COMMIT PHASE</button>
+</div>
+
+<!-- Clean external script injection -->
+<script src="popup.js"></script>
+
 </body>
 </html>
